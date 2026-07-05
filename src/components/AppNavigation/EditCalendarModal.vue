@@ -43,8 +43,8 @@
 					{{ $t('calendar', 'Never show me as busy (set this calendar to transparent)') }}
 				</NcCheckboxRadioSwitch>
 			</template>
-			<template v-if="!calendar.isSharedWithMe && isAfterVersion34">
-				<template v-if="isAfterVersion35">
+			<template v-if="!calendar.isSharedWithMe && supportsDefaultCalendarAlarms">
+				<template v-if="supportsPluralDefaultCalendarAlarms">
 					<div class="edit-calendar-modal__default-alarm">
 						<label class="edit-calendar-modal__default-alarm__label">
 							{{ $t('calendar', 'Default reminder for part-day events') }}
@@ -356,7 +356,7 @@ export default {
 		 *
 		 * @return {boolean}
 		 */
-		isAfterVersion34() {
+		supportsDefaultCalendarAlarms() {
 			return isAfterVersion(34)
 		},
 
@@ -365,7 +365,7 @@ export default {
 		 *
 		 * @return {boolean}
 		 */
-		isAfterVersion35() {
+		supportsPluralDefaultCalendarAlarms() {
 			return isAfterVersion(35)
 		},
 	},
@@ -382,7 +382,7 @@ export default {
 			this.calendarColorChanged = false
 			this.isTransparent = calendar.transparency === 'transparent'
 
-			if (this.isAfterVersion35) {
+			if (isAfterVersion(35)) {
 				this.defaultAlarmsPartDay = [...(calendar.defaultAlarmsPartDay ?? [])]
 				this.defaultAlarmsFullDay = [...(calendar.defaultAlarmsFullDay ?? [])]
 			} else {
@@ -475,7 +475,7 @@ export default {
 		 */
 		async saveDefaultAlarm() {
 			try {
-				if (this.isAfterVersion35) {
+				if (isAfterVersion(35)) {
 					await this.calendarsStore.changeCalendarDefaultAlarms({
 						calendar: this.calendar,
 						defaultAlarmsPartDay: this.defaultAlarmsPartDay,
@@ -516,7 +516,7 @@ export default {
 				if (this.calendarNameChanged) {
 					await this.saveName()
 				}
-				if (this.isAfterVersion34 && this.defaultAlarmChanged) {
+				if (isAfterVersion(34) && this.defaultAlarmChanged) {
 					await this.saveDefaultAlarm()
 				}
 			} catch (error) {
