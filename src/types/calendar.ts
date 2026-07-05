@@ -101,6 +101,10 @@ export interface CalendarInterface {
 	defaultAlarmPartDay: number | null
 	/** Default alarm/reminder for full-day events in seconds (null if disabled) */
 	defaultAlarmFullDay: number | null
+	/** Default alarms for part-day events (NC35+ plural CalDAV props) */
+	defaultAlarmsPartDay: import('./defaultCalendarAlarm.ts').DefaultCalendarAlarm[]
+	/** Default alarms for full-day events (NC35+ plural CalDAV props) */
+	defaultAlarmsFullDay: import('./defaultCalendarAlarm.ts').DefaultCalendarAlarm[]
 }
 
 /**
