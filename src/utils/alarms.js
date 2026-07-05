@@ -204,9 +204,9 @@ export function getTotalSecondsFromAmountHourMinutesAndUnitForAllDayEvents(amoun
 }
 
 /**
- * Resolves the default alarms for an event.
- * On NC35+, uses the normalized plural lists on the calendar model.
- * On NC34, falls back to a single DISPLAY alarm from calendar or global defaults.
+ * Preferred resolver for default alarms when creating or updating an event.
+ * On NC35+, returns the normalized plural lists on the calendar model (DISPLAY/EMAIL).
+ * On NC34, wraps the legacy single-int reminder as one DISPLAY alarm.
  *
  * @param {object} data The destructuring object
  * @param {object|undefined} data.calendar The selected calendar
@@ -291,9 +291,10 @@ export function updateDefaultAlarm(calendarId, calendarObjectInstance) {
 }
 
 /**
- * Resolves the default reminder for an event.
- * Calendar-specific defaults win, then the global part/full-day defaults,
- * then the legacy global defaultReminder for backwards compatibility.
+ * Legacy resolver: single default reminder in seconds (DISPLAY only).
+ * Reads calendar DAV int defaults (NC34+) then global user settings.
+ *
+ * @deprecated Use {@link getDefaultAlarmsForEvent} instead. Kept exported for backwards compatibility.
  *
  * @param {object} data The destructuring object
  * @param {object|undefined} data.calendar The selected calendar
