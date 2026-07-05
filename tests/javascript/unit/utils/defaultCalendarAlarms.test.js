@@ -31,7 +31,7 @@ describe('Test suite: defaultCalendarAlarms utils', () => {
 		expect(normalizeFromDav(null, null)).toEqual([])
 	})
 
-	it('should preserve all normalized alarms without a count cap', () => {
+	it('should preserve all normalized alarms from DAV', () => {
 		const plural = Array.from({ length: 12 }, (_, index) => ({
 			trigger: -60 * (index + 1),
 			action: 'DISPLAY',
