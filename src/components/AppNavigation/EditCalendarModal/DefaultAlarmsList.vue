@@ -8,7 +8,6 @@
 		<DefaultAlarmsListNew
 			:isAllDay="isAllDay"
 			:showIcon="alarms.length === 0"
-			:disabled="alarms.length >= maxAlarms"
 			@addAlarm="addAlarm" />
 		<DefaultAlarmsListItem
 			v-for="(alarm, index) in alarms"
@@ -24,7 +23,6 @@
 <script>
 import DefaultAlarmsListItem from './DefaultAlarmsListItem.vue'
 import DefaultAlarmsListNew from './DefaultAlarmsListNew.vue'
-import { MAX_DEFAULT_CALENDAR_ALARMS } from '../../../utils/defaultCalendarAlarms.js'
 
 export default {
 	name: 'DefaultAlarmsList',
@@ -49,18 +47,10 @@ export default {
 		alarms() {
 			return this.modelValue
 		},
-
-		maxAlarms() {
-			return MAX_DEFAULT_CALENDAR_ALARMS
-		},
 	},
 
 	methods: {
 		addAlarm(alarm) {
-			if (this.alarms.length >= MAX_DEFAULT_CALENDAR_ALARMS) {
-				return
-			}
-
 			this.$emit('update:modelValue', [...this.alarms, alarm])
 		},
 

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 import {
-	MAX_DEFAULT_CALENDAR_ALARMS,
 	defaultAlarmsEqual,
 	normalizeFromDav,
 	toDavPayload,
@@ -32,13 +31,13 @@ describe('Test suite: defaultCalendarAlarms utils', () => {
 		expect(normalizeFromDav(null, null)).toEqual([])
 	})
 
-	it('should cap normalized alarms at the server maximum', () => {
+	it('should preserve all normalized alarms without a count cap', () => {
 		const plural = Array.from({ length: 12 }, (_, index) => ({
 			trigger: -60 * (index + 1),
 			action: 'DISPLAY',
 		}))
 
-		expect(normalizeFromDav(plural, null)).toHaveLength(MAX_DEFAULT_CALENDAR_ALARMS)
+		expect(normalizeFromDav(plural, null)).toHaveLength(12)
 	})
 
 	it('should serialize alarms for DAV', () => {
@@ -56,13 +55,13 @@ describe('Test suite: defaultCalendarAlarms utils', () => {
 		expect(toDavPayload(null)).toBeNull()
 	})
 
-	it('should reject too many alarms', () => {
-		const alarms = Array.from({ length: MAX_DEFAULT_CALENDAR_ALARMS + 1 }, (_, index) => ({
+	it('should serialize large alarm lists for DAV', () => {
+		const alarms = Array.from({ length: 11 }, (_, index) => ({
 			trigger: -60 * (index + 1),
 			action: 'DISPLAY',
 		}))
 
-		expect(() => toDavPayload(alarms)).toThrow(`Too many default alarms (max ${MAX_DEFAULT_CALENDAR_ALARMS})`)
+		expect(toDavPayload(alarms)).toHaveLength(11)
 	})
 
 	it('should reject invalid alarm actions', () => {

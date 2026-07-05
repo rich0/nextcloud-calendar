@@ -13,8 +13,6 @@ import {
 /** @typedef {import('../types/calendar.ts').DefaultCalendarAlarm} DefaultCalendarAlarm */
 /** @typedef {import('../types/calendar.ts').DefaultCalendarAlarmAction} DefaultCalendarAlarmAction */
 
-export const MAX_DEFAULT_CALENDAR_ALARMS = 10
-
 const ALLOWED_ACTIONS = ['DISPLAY', 'EMAIL']
 
 /**
@@ -76,7 +74,6 @@ export function normalizeFromDav(plural, legacyInt) {
 				trigger: entry.trigger,
 				action: /** @type {DefaultCalendarAlarmAction} */ (entry.action),
 			}))
-			.slice(0, MAX_DEFAULT_CALENDAR_ALARMS)
 	}
 
 	if (legacyInt !== null && legacyInt !== undefined) {
@@ -93,10 +90,6 @@ export function normalizeFromDav(plural, legacyInt) {
 export function toDavPayload(alarms) {
 	if (!Array.isArray(alarms) || alarms.length === 0) {
 		return null
-	}
-
-	if (alarms.length > MAX_DEFAULT_CALENDAR_ALARMS) {
-		throw new Error(`Too many default alarms (max ${MAX_DEFAULT_CALENDAR_ALARMS})`)
 	}
 
 	const normalized = alarms.map((alarm) => {
