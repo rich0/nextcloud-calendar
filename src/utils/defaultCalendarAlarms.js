@@ -10,8 +10,8 @@ import {
 	getTotalSecondsFromAmountHourMinutesAndUnitForAllDayEvents,
 } from './alarms.js'
 
-/** @typedef {import('../types/defaultCalendarAlarm.ts').DefaultCalendarAlarm} DefaultCalendarAlarm */
-/** @typedef {import('../types/defaultCalendarAlarm.ts').DefaultCalendarAlarmAction} DefaultCalendarAlarmAction */
+/** @typedef {import('../types/calendar.ts').DefaultCalendarAlarm} DefaultCalendarAlarm */
+/** @typedef {import('../types/calendar.ts').DefaultCalendarAlarmAction} DefaultCalendarAlarmAction */
 
 export const MAX_DEFAULT_CALENDAR_ALARMS = 10
 

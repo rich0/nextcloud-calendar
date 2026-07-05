@@ -33,6 +33,13 @@ export interface CalendarShareInterface {
  */
 export type CalendarTransparency = 'opaque' | 'transparent'
 
+export type DefaultCalendarAlarmAction = 'DISPLAY' | 'EMAIL'
+
+export type DefaultCalendarAlarm = {
+	trigger: number
+	action: DefaultCalendarAlarmAction
+}
+
 /**
  * Represents a calendar collection as used throughout the calendar app.
  *
@@ -102,9 +109,9 @@ export interface CalendarInterface {
 	/** Default alarm/reminder for full-day events in seconds (null if disabled) */
 	defaultAlarmFullDay: number | null
 	/** Default alarms for part-day events (NC35+ plural CalDAV props) */
-	defaultAlarmsPartDay: import('./defaultCalendarAlarm.ts').DefaultCalendarAlarm[]
+	defaultAlarmsPartDay: DefaultCalendarAlarm[]
 	/** Default alarms for full-day events (NC35+ plural CalDAV props) */
-	defaultAlarmsFullDay: import('./defaultCalendarAlarm.ts').DefaultCalendarAlarm[]
+	defaultAlarmsFullDay: DefaultCalendarAlarm[]
 }
 
 /**
