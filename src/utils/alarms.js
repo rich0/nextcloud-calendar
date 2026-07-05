@@ -277,8 +277,13 @@ export function updateDefaultAlarm(calendarId, calendarObjectInstance) {
 		return
 	}
 
-	// Only create missing default alarms for newly constructed event instances.
-	if (calendarObjectInstance !== calendarObjectInstanceStore.calendarObjectInstance) {
+	// Only create missing default alarms for newly constructed event instances,
+	// or the active editor instance while composing a new unsaved event (calendar switch).
+	const isPreStoreInstance = calendarObjectInstance !== calendarObjectInstanceStore.calendarObjectInstance
+	const isNewEditorInstance = calendarObjectInstanceStore.isNew
+		&& calendarObjectInstance === calendarObjectInstanceStore.calendarObjectInstance
+
+	if (isPreStoreInstance || isNewEditorInstance) {
 		for (const { trigger, action } of defaultAlarms) {
 			calendarObjectInstanceStore.addAlarmToCalendarObjectInstance({
 				calendarObjectInstance,
