@@ -8,9 +8,13 @@ import {
 	getAmountAndUnitForTimedEvents,
 	getTotalSecondsFromAmountAndUnitForTimedEvents,
 	getTotalSecondsFromAmountHourMinutesAndUnitForAllDayEvents,
+	getDefaultAlarmsForEvent,
+	getDefaultReminderForEvent,
 	updateAlarms,
 } from '../../../../src/utils/alarms.js'
 import { getParserManager } from '@nextcloud/calendar-js'
+import useSettingsStore from '../../../../src/store/settings.js'
+import { setActivePinia, createPinia } from 'pinia'
 
 /**
  * Parse an ICS string and return the first event component.
@@ -51,6 +55,97 @@ function eventICS(alarms, attendees = '') {
 }
 
 describe('utils/alarms test suite', () => {
+
+	beforeEach(() => {
+		setActivePinia(createPinia())
+		globalThis.OC.config.version = '34.0.0'
+	})
+
+	describe('getDefaultAlarmsForEvent', () => {
+		it('returns plural part-day alarms on NC35+', () => {
+			globalThis.OC.config.version = '35.0.0'
+
+			const calendar = {
+				defaultAlarmsPartDay: [
+					{ trigger: -900, action: 'DISPLAY' },
+					{ trigger: -3600, action: 'EMAIL' },
+				],
+				defaultAlarmsFullDay: [],
+				dav: {},
+			}
+
+			expect(getDefaultAlarmsForEvent({ calendar, isAllDay: false })).toEqual([
+				{ trigger: -900, action: 'DISPLAY' },
+				{ trigger: -3600, action: 'EMAIL' },
+			])
+		})
+
+		it('returns plural full-day alarms on NC35+', () => {
+			globalThis.OC.config.version = '35.0.0'
+
+			const calendar = {
+				defaultAlarmsPartDay: [],
+				defaultAlarmsFullDay: [
+					{ trigger: -32400, action: 'DISPLAY' },
+				],
+				dav: {},
+			}
+
+			expect(getDefaultAlarmsForEvent({ calendar, isAllDay: true })).toEqual([
+				{ trigger: -32400, action: 'DISPLAY' },
+			])
+		})
+
+		it('returns empty list on NC35+ when calendar defaults are disabled', () => {
+			globalThis.OC.config.version = '35.0.0'
+
+			const calendar = {
+				defaultAlarmsPartDay: [],
+				defaultAlarmsFullDay: [],
+				dav: {},
+			}
+
+			expect(getDefaultAlarmsForEvent({ calendar, isAllDay: false })).toEqual([])
+		})
+
+		it('falls back to a single DISPLAY alarm from calendar DAV defaults on NC34', () => {
+			const calendar = {
+				defaultAlarmsPartDay: [],
+				defaultAlarmsFullDay: [],
+				dav: {
+					defaultAlarmPartDay: -900,
+				},
+			}
+
+			expect(getDefaultAlarmsForEvent({ calendar, isAllDay: false })).toEqual([
+				{ trigger: -900, action: 'DISPLAY' },
+			])
+		})
+
+		it('falls back to global settings when calendar has no defaults on NC34', () => {
+			const settingsStore = useSettingsStore()
+			settingsStore.defaultReminderPartDay = '-1800'
+
+			expect(getDefaultAlarmsForEvent({ calendar: undefined, isAllDay: false })).toEqual([
+				{ trigger: -1800, action: 'DISPLAY' },
+			])
+		})
+	})
+
+	describe('getDefaultReminderForEvent', () => {
+		it('prefers calendar DAV defaults over global settings on NC34', () => {
+			const settingsStore = useSettingsStore()
+			settingsStore.defaultReminderPartDay = '-1800'
+
+			const calendar = {
+				dav: {
+					defaultAlarmPartDay: -900,
+				},
+			}
+
+			expect(getDefaultReminderForEvent({ calendar, isAllDay: false })).toEqual(-900)
+		})
+	})
 
 	it('should return the correct factor for different units', () => {
 		expect(getFactorForAlarmUnit('seconds')).toEqual(1)
