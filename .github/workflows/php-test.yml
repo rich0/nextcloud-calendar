@@ -29,7 +29,7 @@ jobs:
         extensions: ctype, curl, dom, gd, gmp, iconv, intl, json, mbstring, openssl, pdo_sqlite, posix, sqlite, xml, zip
         coverage: xdebug
     - name: Checkout Nextcloud
-      run: git clone https://github.com/nextcloud/server.git --recursive --depth 1 -b ${{ matrix.nextcloud-versions }} nextcloud
+      run: git clone https://github.com/rich0/nextcloud-server.git --recursive --depth 1 -b ${{ matrix.nextcloud-versions }} nextcloud
     - name: Patch version check for nightly PHP
       if: ${{ matrix.php-versions == '8.4' }}
       run: echo "<?php" > nextcloud/lib/versioncheck.php
@@ -80,7 +80,7 @@ jobs:
           extensions: ctype, curl, dom, gd, gmp, iconv, intl, json, mbstring, openssl, pdo_sqlite, posix, sqlite, xml, zip
           coverage: xdebug
       - name: Checkout Nextcloud
-        run: git clone https://github.com/nextcloud/server.git --recursive --depth 1 -b ${{ matrix.nextcloud-versions }} nextcloud
+        run: git clone https://github.com/rich0/nextcloud-server.git --recursive --depth 1 -b ${{ matrix.nextcloud-versions }} nextcloud
       - name: Patch version check for nightly PHP
         if: ${{ matrix.php-versions == '8.4' }}
         run: echo "<?php" > nextcloud/lib/versioncheck.php
